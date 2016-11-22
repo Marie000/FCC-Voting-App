@@ -18,10 +18,14 @@ __decorate([
     core_1.Input('private'),
     __metadata("design:type", Object)
 ], Dashboard.prototype, "private", void 0);
+__decorate([
+    core_1.Input('surveys'),
+    __metadata("design:type", Object)
+], Dashboard.prototype, "surveys", void 0);
 Dashboard = __decorate([
     core_1.Component({
         selector: 'dashboard',
-        template: "\n        <h1>This is the \n        <span *ngIf=\"!private\">Public</span>\n         <span *ngIf=\"private\">Private</span>\n         dashboard</h1>\n    "
+        template: "\n        <h1>This is the \n        <span *ngIf=\"!private\">Public</span>\n         <span *ngIf=\"private\">Private</span>\n         dashboard</h1>\n         \n         <!--View List of surveys-->\n         <h2>List of surveys</h2>\n         <ul>\n         <li *ngFor=\"let survey of surveys\">{{survey.title}}</li>\n         </ul>\n         <!--Create a survey-->\n         <div *ngIf=\"private\">\n         <h2>Create a survey</h2>\n        </div>\n\n    "
     }),
     __metadata("design:paramtypes", [])
 ], Dashboard);

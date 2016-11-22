@@ -2,12 +2,13 @@ import { Component} from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { User } from './models/user.model';
 import { UserService } from './services/user.service';
+import { SurveyService } from './services/survey.service'
 
 const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 
 @Component({
     selector: 'login',
-    providers:[UserService],
+    providers:[UserService, SurveyService],
     template: `
 <h1>Login or sign up</h1>
   <div *ngIf="!dashboard">
@@ -40,13 +41,13 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
   </div>
         <div *ngIf="dashboard">
             <button (click)="logout()" class="logout-button btn btn-default">Log out</button>
-            <dashboard [private]="loggedIn"></dashboard>
+            <dashboard [private]="loggedIn" [surveys]="surveys"></dashboard>
         </div>
 `
 })
 export class Login {
 
-    constructor(public fb: FormBuilder, private userService: UserService){}
+    constructor(public fb: FormBuilder, private userService: UserService, private surveyService: SurveyService){}
     signInForm:FormGroup;
     createUserForm:FormGroup;
     users:User[];
@@ -70,6 +71,7 @@ export class Login {
     user={};
     submitted=false;
     loggedIn=false;
+    surveys = [];
 
     onCreateUser(event,user,valid) {
         event.preventDefault();
@@ -104,9 +106,9 @@ export class Login {
         if (valid) {
             let body = {email:value.email, password:value.password}
             this.userService.login(body).subscribe(user =>{
+                this.getSurveys();
                 this.loggedIn=true;
                 this.dashboard=true;
-                console.log('success')
             }, error=>{
                 console.log(error)
             })
@@ -116,6 +118,13 @@ export class Login {
 
     accessPublicDashboard(){
         this.dashboard=true;
+    }
+
+    getSurveys(){
+        this.surveyService.getSurveys().subscribe(surveys => {
+            this.surveys = surveys;
+            console.log(surveys)
+        })
     }
 
 }
