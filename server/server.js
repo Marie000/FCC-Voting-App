@@ -61,10 +61,9 @@ app.post('/api/users/login',function(req,res){
       if (response){
         user.generateAuthToken().then(function(token){
           res.header('x-auth',token).json(user);
-          console.log('this should be a success')
         })
       } else {
-        return res.status(400).send('wrong password')
+        return res.status(400).json('wrong password')
       }
     })
   }).catch(function(e){

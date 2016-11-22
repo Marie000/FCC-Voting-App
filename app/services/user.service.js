@@ -21,8 +21,15 @@ var UserService = (function () {
     UserService.prototype.createUser = function (newUser) {
         console.log('service trying to create user');
         var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
-        var options = new http_1.RequestOptions({ headers: headers, 'Access-Control-Allow-Origin': "*" });
+        var options = new http_1.RequestOptions({ headers: headers });
         return this.http.post(apiUrl + '/users', JSON.stringify(newUser), options)
+            .map(function (res) { return res.json(); })
+            .catch(function (error) { return Rx_1.Observable.throw(error.error || 'Server error'); });
+    };
+    UserService.prototype.login = function (user) {
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(apiUrl + '/users/login', JSON.stringify(user), options)
             .map(function (res) { return res.json(); })
             .catch(function (error) { return Rx_1.Observable.throw(error.error || 'Server error'); });
     };

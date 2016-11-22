@@ -20,6 +20,7 @@ var Login = (function () {
         this.dashboard = false;
         this.user = {};
         this.submitted = false;
+        this.loggedIn = false;
     }
     Login.prototype.ngOnInit = function () {
         //signIn form controller
@@ -36,6 +37,7 @@ var Login = (function () {
         // this.users = this.UserService.getData();
     };
     Login.prototype.onCreateUser = function (event, user, valid) {
+        var _this = this;
         event.preventDefault();
         this.submitted = true;
         if (valid) {
@@ -43,7 +45,8 @@ var Login = (function () {
                 var newUser = { email: user.email, password: user.password };
                 console.log(newUser);
                 this.userService.createUser(newUser).subscribe(function (user) {
-                    console.log(user);
+                    _this.dashboard = true;
+                    _this.loggedIn = true;
                 }, function (error) {
                     console.log('there was an error: ');
                     console.log(error);
@@ -61,9 +64,19 @@ var Login = (function () {
         this.dashboard = false;
         this.signup = false;
     };
-    Login.prototype.onLogin = function (value, valid) {
+    Login.prototype.onLogin = function (event, value, valid) {
+        var _this = this;
+        event.preventDefault();
         this.submitted = true;
         if (valid) {
+            var body = { email: value.email, password: value.password };
+            this.userService.login(body).subscribe(function (user) {
+                _this.loggedIn = true;
+                _this.dashboard = true;
+                console.log('success');
+            }, function (error) {
+                console.log(error);
+            });
             console.log('check for login');
         }
     };

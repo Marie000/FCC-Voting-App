@@ -13,8 +13,15 @@ export class UserService{
     createUser(newUser:User):Observable<User>{
         console.log('service trying to create user')
         let headers = new Headers({ 'Content-Type': 'application/json'});
-        let options = new RequestOptions({ headers: headers, 'Access-Control-Allow-Origin':"*" });
+        let options = new RequestOptions({ headers: headers });
         return this.http.post(apiUrl+'/users', JSON.stringify(newUser), options)
+            .map((res:Response)=>res.json())
+            .catch((error:any)=>Observable.throw(error.error || 'Server error'))
+    }
+    login(user:User):Observable<User>{
+        let headers = new Headers({'Content-Type':'application/json'});
+        let options = new RequestOptions({headers: headers});
+        return this.http.post(apiUrl+'/users/login', JSON.stringify(user), options)
             .map((res:Response)=>res.json())
             .catch((error:any)=>Observable.throw(error.error || 'Server error'))
     }

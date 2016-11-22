@@ -69,6 +69,7 @@ export class Login {
     dashboard=false;
     user={};
     submitted=false;
+    loggedIn=false;
 
     onCreateUser(event,user,valid) {
         event.preventDefault();
@@ -78,7 +79,8 @@ export class Login {
                 let newUser = {email:user.email, password:user.password}
                 console.log(newUser);
                 this.userService.createUser(newUser).subscribe(user => {
-                    console.log(user)
+                    this.dashboard=true;
+                    this.loggedIn=true;
                 },error => {
                     console.log('there was an error: ')
                     console.log(error)
@@ -96,9 +98,18 @@ export class Login {
         this.signup=false;
     }
 
-    onLogin(value,valid) {
+    onLogin(event,value,valid) {
+        event.preventDefault();
         this.submitted = true;
         if (valid) {
+            let body = {email:value.email, password:value.password}
+            this.userService.login(body).subscribe(user =>{
+                this.loggedIn=true;
+                this.dashboard=true;
+                console.log('success')
+            }, error=>{
+                console.log(error)
+            })
             console.log('check for login')
         }
     }
