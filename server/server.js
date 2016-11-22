@@ -14,18 +14,38 @@ app.use(express.static(__dirname+"/../view"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+app.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
 
 // USERS
 
 // Create a user
 app.post('/api/users', function(req,res){
+  console.log('server trying to create a user')
+  console.log(req.body)
   var body = _.pick(req.body,['email','password']);
   var newUser = new User(body);
   newUser.save().then(function(user){
-    //will need to return a token
-    user.generateAuthToken()
+    return user.generateAuthToken()
   }).then(function(token){
-    res.header('x-auth',token).send(newUser.email)
+    console.log('token: '+token)
+    res.header('x-auth',token).json(newUser.email)
   }).catch(function(e){
     res.status(400).send(e)
   })
@@ -40,8 +60,6 @@ app.post('/api/users/login',function(req,res){
     bcrypt.compare(req.body.password, user.password, function(err,response){
       if (response){
         user.generateAuthToken().then(function(token){
-          // this works. I can get that far in the code
-          console.log(token);
           res.header('x-auth',token).json(user);
           console.log('this should be a success')
         })
@@ -134,6 +152,6 @@ app.post('/api/surveys/:id/options', function(req,res){
 });
 
 
-app.listen(3000,function(){
-  console.log('server started on port 3000')
+app.listen(9000,function(){
+  console.log('server started on port 9000')
 })

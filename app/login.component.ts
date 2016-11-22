@@ -1,11 +1,13 @@
 import { Component} from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { User } from './models/user.model';
+import { UserService } from './services/user.service';
 
 const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 
 @Component({
     selector: 'login',
+    providers:[UserService],
     template: `
 <h1>Login or sign up</h1>
   <div *ngIf="!dashboard">
@@ -14,7 +16,7 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
 
     <div *ngIf="signup">
         <h3>SignUp Page</h3>
-        <form class="form-group" [formGroup]="createUserForm" (ngSubmit)="onCreateUser(createUserForm.value,createUserForm.valid)">
+        <form class="form-group" [formGroup]="createUserForm" (ngSubmit)="onCreateUser($event,createUserForm.value,createUserForm.valid)">
             <input class="form-control" type="text" formControlName="email" placeholder="email" name="email"/>
             <small *ngIf="!createUserForm.controls.email.valid && submitted">Valid email is mandatory</small>
             <input class="form-control" type="password" formControlName="password" placeholder="password" name="password"/>
@@ -27,7 +29,7 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
         
     <div *ngIf="!signup">
         <h3>LogIn</h3>
-        <form [formGroup]="signInForm" (ngSubmit)="onLogin(signInForm.value,signInForm.valid)" class="form-group">
+        <form [formGroup]="signInForm" (ngSubmit)="onLogin($event,signInForm.value,signInForm.valid)" class="form-group">
             <input class="form-control" type="text" formControlName="email" placeholder="email" />
             <small *ngIf="!signInForm.controls.email.valid && submitted">Valid email is mandatory</small>
             <input class="form-control" type="password" formControlName="password" placeholder="password" />
@@ -44,7 +46,7 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
 })
 export class Login {
 
-    constructor(public fb: FormBuilder){}
+    constructor(public fb: FormBuilder, private userService: UserService){}
     signInForm:FormGroup;
     createUserForm:FormGroup;
     users:User[];
@@ -57,7 +59,6 @@ export class Login {
         //create user form controller
         this.createUserForm = this.fb.group({
             email:['',[Validators.required,Validators.pattern(emailRegEx)]],
-            name:['',[Validators.required]],
             password:['',[Validators.required]],
             password2:['',[Validators.required]]
         });
@@ -69,14 +70,22 @@ export class Login {
     user={};
     submitted=false;
 
-    onCreateUser(user,valid) {
+    onCreateUser(event,user,valid) {
+        event.preventDefault();
         this.submitted = true;
         if (valid) {
             if (user.password === user.password2) {
-                console.log('passwords match')
-            } else {
-                console.log("passwords must match")
-            }
+                let newUser = {email:user.email, password:user.password}
+                console.log(newUser);
+                this.userService.createUser(newUser).subscribe(user => {
+                    console.log(user)
+                },error => {
+                    console.log('there was an error: ')
+                    console.log(error)
+                    })
+                } else {
+                   console.log("passwords must match")
+                }
         }
     }
     toggleForms(){
