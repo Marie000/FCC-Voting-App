@@ -36,11 +36,11 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
             <input type="submit" class="form-control btn btn-default" value="Submit"/>
         </form>
     </div>
-        
+        <button (click)="accessPublicDashboard()">Enter as a guest</button>
   </div>
         <div *ngIf="dashboard">
             <button (click)="logout()" class="logout-button btn btn-default">Log out</button>
-            <h1>Dashboard tag goes here</h1>
+            <dashboard [private]="loggedIn"></dashboard>
         </div>
 `
 })
@@ -112,6 +112,10 @@ export class Login {
             })
             console.log('check for login')
         }
+    }
+
+    accessPublicDashboard(){
+        this.dashboard=true;
     }
 
 }

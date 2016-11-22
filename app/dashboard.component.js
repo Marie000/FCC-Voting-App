@@ -9,24 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var platform_browser_1 = require("@angular/platform-browser");
-var app_component_1 = require("./app.component");
-var login_component_1 = require("./login.component");
-var dashboard_component_1 = require("./dashboard.component");
-var forms_1 = require("@angular/forms");
-var http_1 = require("@angular/http");
-var AppModule = (function () {
-    function AppModule() {
+var Dashboard = (function () {
+    function Dashboard() {
     }
-    return AppModule;
+    return Dashboard;
 }());
-AppModule = __decorate([
-    core_1.NgModule({
-        imports: [platform_browser_1.BrowserModule, forms_1.FormsModule, forms_1.ReactiveFormsModule, http_1.HttpModule],
-        declarations: [app_component_1.AppComponent, login_component_1.Login, dashboard_component_1.Dashboard],
-        bootstrap: [app_component_1.AppComponent]
+__decorate([
+    core_1.Input('private'),
+    __metadata("design:type", Object)
+], Dashboard.prototype, "private", void 0);
+Dashboard = __decorate([
+    core_1.Component({
+        selector: 'dashboard',
+        template: "\n        <h1>This is the \n        <span *ngIf=\"!private\">Public</span>\n         <span *ngIf=\"private\">Private</span>\n         dashboard</h1>\n    "
     }),
     __metadata("design:paramtypes", [])
-], AppModule);
-exports.AppModule = AppModule;
-//# sourceMappingURL=app.module.js.map
+], Dashboard);
+exports.Dashboard = Dashboard;
+//# sourceMappingURL=dashboard.component.js.map
