@@ -41,7 +41,7 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
   </div>
         <div *ngIf="dashboard">
             <button (click)="logout()" class="logout-button btn btn-default">Log out</button>
-            <dashboard [private]="loggedIn" [surveys]="surveys"></dashboard>
+            <dashboard [private]="loggedIn" ></dashboard>
         </div>
 `
 })
@@ -71,7 +71,6 @@ export class Login {
     user={};
     submitted=false;
     loggedIn=false;
-    surveys = [];
 
     onCreateUser(event,user,valid) {
         event.preventDefault();
@@ -106,7 +105,7 @@ export class Login {
         if (valid) {
             let body = {email:value.email, password:value.password}
             this.userService.login(body).subscribe(user =>{
-                this.getSurveys();
+               // this.getSurveys();
                 this.loggedIn=true;
                 this.dashboard=true;
             }, error=>{
@@ -118,13 +117,6 @@ export class Login {
 
     accessPublicDashboard(){
         this.dashboard=true;
-    }
-
-    getSurveys(){
-        this.surveyService.getSurveys().subscribe(surveys => {
-            this.surveys = surveys;
-            console.log(surveys)
-        })
     }
 
 }

@@ -1,7 +1,9 @@
 import {Component, Input} from '@angular/core';
+import {SurveyService} from './services/survey.service';
 
 @Component({
     selector:'dashboard',
+    providers:[SurveyService],
     template:`
         <h1>This is the 
         <span *ngIf="!private">Public</span>
@@ -23,5 +25,19 @@ import {Component, Input} from '@angular/core';
 
 export class Dashboard {
     @Input('private') private;
-    @Input('surveys') surveys;
+    //@Input('surveys') surveys;
+    constructor(private surveyService:SurveyService){
+        this.surveys=[];
+    }
+    surveys=[{'title':'not loaded yet'}];
+    ngOnInit(){
+        this.getSurveys();
+    }
+
+    getSurveys(){
+        this.surveyService.getSurveys().subscribe(surveys => {
+            this.surveys = surveys;
+            console.log(surveys)
+        })
+    }
 }
