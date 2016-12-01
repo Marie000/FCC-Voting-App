@@ -18,6 +18,7 @@ import {SurveyService} from './services/survey.service';
          <!--Create a survey-->
          <div *ngIf="private">
          <h2>Create a survey</h2>
+         <add-survey-form [token]="token"></add-survey-form>
         </div>
 
     `
@@ -25,7 +26,7 @@ import {SurveyService} from './services/survey.service';
 
 export class Dashboard {
     @Input('private') private;
-    //@Input('surveys') surveys;
+    @Input('token') token;
     constructor(private surveyService:SurveyService){
         this.surveys=[];
     }

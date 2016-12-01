@@ -3,6 +3,4 @@ export class Survey {
     creator:any;
     options:any[];
     contributors:any[];
-    endDate?:date;
-
 }

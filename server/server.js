@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(function (req, res, next) {
-
+  console.log('middleware working')
   // Website you wish to allow to connect
   res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -23,11 +23,11 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
   // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-Type, Accept, x-auth");
 
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  //res.setHeader('Access-Control-Allow-Credentials', true);
 
   // Pass to next layer of middleware
   next();
@@ -96,9 +96,11 @@ app.get('/api/surveys/:id',function(req,res){
 
 // POST new survey
 app.post('/api/surveys', authenticate, function(req,res){
+  console.log('app.post surveys');
   var body = req.body;
   body._creator = req.user._id;
   var newSurvey = new Survey(body);
+  console.log(newSurvey)
   newSurvey.save().then(function(survey){
     res.send(survey);
   }).catch(function(err){

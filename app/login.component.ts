@@ -10,8 +10,8 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
     selector: 'login',
     providers:[UserService, SurveyService],
     template: `
-<h1>Login or sign up</h1>
   <div *ngIf="!dashboard">
+  <h1>Login or sign up</h1>
     <div *ngIf="signup">   <button class="btn btn-default" (click)="toggleForms()">LogIn</button> </div>
     <div *ngIf="!signup">   <button class="btn btn-default" (click)="toggleForms()">Create a user</button> </div>
 
@@ -40,8 +40,15 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
         <button (click)="accessPublicDashboard()">Enter as a guest</button>
   </div>
         <div *ngIf="dashboard">
+            <div *ngIf="loggedIn">
             <button (click)="logout()" class="logout-button btn btn-default">Log out</button>
-            <dashboard [private]="loggedIn" ></dashboard>
+            </div>
+            
+            <div *ngIf="!loggedIn">
+            <button (click)="openLogin()" class="logout-button btn btn-default">Return to Log in page</button>
+            </div>
+            
+            <dashboard [token]="token" [private]="loggedIn" ></dashboard>
         </div>
 `
 })
@@ -71,6 +78,7 @@ export class Login {
     user={};
     submitted=false;
     loggedIn=false;
+    token='';
 
     onCreateUser(event,user,valid) {
         event.preventDefault();
@@ -98,6 +106,10 @@ export class Login {
         this.dashboard=false;
         this.signup=false;
     }
+    openLogin() {
+        this.dashboard=false;
+        this.signup=false;
+    }
 
     onLogin(event,value,valid) {
         event.preventDefault();
@@ -108,6 +120,8 @@ export class Login {
                // this.getSurveys();
                 this.loggedIn=true;
                 this.dashboard=true;
+                this.token=user.tokens[0].token
+                console.log(this.token)
             }, error=>{
                 console.log(error)
             })

@@ -23,6 +23,13 @@ var SurveyService = (function () {
             .map(function (res) { return res.json(); })
             .catch(function (error) { return Rx_1.Observable.throw(error.error || 'Server error'); });
     };
+    SurveyService.prototype.saveSurvey = function (newSurvey, token) {
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' /*, 'x-auth':token*/ });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(apiUrl + '/surveys', JSON.stringify(newSurvey), options)
+            .map(function (res) { return res.json(); })
+            .catch(function (error) { return Rx_1.Observable.throw(error.error || 'Server error'); });
+    };
     return SurveyService;
 }());
 SurveyService = __decorate([
