@@ -22,6 +22,7 @@ import { SurveyService } from './services/survey.service';
                 {{option.text}}
           </li>
           </ul>
+          
           <form class="form-control"
                 [formGroup]="addOptionForm"
                 (ngSubmit)="onAddOption($event, addOptionForm.value, addOptionForm.valid)">
@@ -60,14 +61,21 @@ export class AddSurveyForm {
 
     onCreateSurvey(event,value,valid){
         event.preventDefault();
-        this.submitted = true;
-        if (valid) {
-            let newSurvey = {
-                title:value.title,
-                options:this.options
-            };
-            this.surveyService.saveSurvey(newSurvey, this.token)
+        if(event.defaultPrevented){
+            this.submitted = true;
+            if (valid) {
+                let newSurvey = {
+                    title:value.title,
+                    options:this.options
+                };
+                this.surveyService.saveSurvey(newSurvey, this.token).subscribe(survey=>{
+                    console.log('survey: '+survey)
+                }, error =>{
+                    console.log(error)
+                })
+            }
         }
+
     }
 
     onAddOption(event,value,valid){

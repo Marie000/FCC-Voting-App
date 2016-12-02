@@ -21,7 +21,7 @@ export class SurveyService{
         let options = new RequestOptions({headers: headers});
         return this.http.post(apiUrl+'/surveys',JSON.stringify(newSurvey), options)
             .map((res:Response)=>res.json())
-            .catch((error:any)=>Observable.throw(error.error || 'Server error'))
+            .catch((error:any)=>console.log(error || 'Server error'))
     }
     /*
     createUser(newUser:User):Observable<User>{

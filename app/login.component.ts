@@ -86,7 +86,6 @@ export class Login {
         if (valid) {
             if (user.password === user.password2) {
                 let newUser = {email:user.email, password:user.password}
-                console.log(newUser);
                 this.userService.createUser(newUser).subscribe(user => {
                     this.dashboard=true;
                     this.loggedIn=true;

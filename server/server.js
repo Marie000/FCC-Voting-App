@@ -3,13 +3,14 @@ var app = express();
 var bodyParser = require('body-parser');
 var _ = require('lodash');
 var bcrypt = require('bcryptjs');
+var path = require('path');
 
 var {mongoose} = require('./database/database');
 var {User} = require ('./models/user');
 var {Survey} = require('./models/survey');
 var {authenticate} = require('./middleware/authenticate');
 
-app.use(express.static(__dirname+"/../view"));
+app.use(express.static(__dirname+"/../index.html"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -23,8 +24,7 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
   // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-Type, Accept, x-auth");
-
+  res.setHeader('Access-Control-Allow-Headers', 'x-auth, Content-Type');
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
   //res.setHeader('Access-Control-Allow-Credentials', true);
@@ -32,6 +32,10 @@ app.use(function (req, res, next) {
   // Pass to next layer of middleware
   next();
 });
+
+app.get('/',function(req,res){
+  res.sendFile(path.join(__dirname+"/../index.html"));
+})
 
 // USERS
 
@@ -44,7 +48,7 @@ app.post('/api/users', function(req,res){
   newUser.save().then(function(user){
     return user.generateAuthToken()
   }).then(function(token){
-    console.log('token: '+token)
+    console.log('token: '+token);
     res.header('x-auth',token).json(newUser.email)
   }).catch(function(e){
     res.status(400).send(e)
@@ -96,11 +100,9 @@ app.get('/api/surveys/:id',function(req,res){
 
 // POST new survey
 app.post('/api/surveys', authenticate, function(req,res){
-  console.log('app.post surveys');
   var body = req.body;
   body._creator = req.user._id;
   var newSurvey = new Survey(body);
-  console.log(newSurvey)
   newSurvey.save().then(function(survey){
     res.send(survey);
   }).catch(function(err){

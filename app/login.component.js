@@ -46,7 +46,6 @@ var Login = (function () {
         if (valid) {
             if (user.password === user.password2) {
                 var newUser = { email: user.email, password: user.password };
-                console.log(newUser);
                 this.userService.createUser(newUser).subscribe(function (user) {
                     _this.dashboard = true;
                     _this.loggedIn = true;
