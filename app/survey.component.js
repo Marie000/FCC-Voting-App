@@ -13,8 +13,10 @@ var survey_service_1 = require("./services/survey.service");
 var Survey = (function () {
     function Survey(surveyService) {
         this.surveyService = surveyService;
+        this.newOption = '';
         this.mySurvey = false;
         this.open = false;
+        this.results = false;
         this.options = [];
     }
     Survey.prototype.ngOnInit = function () {
@@ -37,6 +39,12 @@ var Survey = (function () {
         }
     };
     Survey.prototype.saveOptions = function () {
+        console.log(this.newOption);
+        if (this.newOption) {
+            this.surveyService.addNewOption(this.survey._id, { 'text': this.newOption, 'count': 1 }).subscribe(function (survey) {
+                console.log('new option added');
+            });
+        }
         for (var i in this.options) {
             this.surveyService.saveOption(this.survey._id, this.options[i]._id).subscribe(function (survey) {
                 console.log('success?');
@@ -44,6 +52,8 @@ var Survey = (function () {
                 console.log(error);
             });
         }
+        this.open = false;
+        this.results = true;
     };
     Survey.prototype.deleteSurvey = function () {
         this.surveyService.deleteSurvey(this.survey._id, this.token).subscribe(function (survey) {
@@ -51,6 +61,9 @@ var Survey = (function () {
         }, function (error) {
             console.log(error);
         });
+    };
+    Survey.prototype.showResults = function () {
+        this.results = !this.results;
     };
     return Survey;
 }());
@@ -70,7 +83,7 @@ Survey = __decorate([
     core_1.Component({
         selector: 'survey',
         providers: [survey_service_1.SurveyService],
-        template: "\n        <h3 (click)=\"toggleSurvey()\">{{survey.title}}</h3>\n        <button *ngIf='mySurvey' (click)=\"deleteSurvey()\">Delete</button>\n        <div *ngIf=\"open\">\n\n            <div *ngFor=\"let option of survey.options\">\n                    <input type=\"checkbox\"\n               name=option\n               (change)=\"changeOption($event,option)\"\n                />\n                {{option.text}}\n            </div>     \n         <button (click)=\"saveOptions()\">Save</button>\n        </div>\n    "
+        template: "\n        <h3>{{survey.title}}</h3>\n        <button (click)=\"toggleSurvey()\">\n        <span *ngIf=\"open\">Close</span> <span *ngIf=\"!open\">Open</span>\n        </button>\n        <button (click)=\"showResults()\">\n        <span *ngIf=\"results\">Hide Results</span><span *ngIf=\"!results\">Show Results</span>\n        </button>\n        <button *ngIf='mySurvey' (click)=\"deleteSurvey()\">Delete</button>\n        <div *ngIf=\"open\">\n\n            <div *ngFor=\"let option of survey.options\">\n                    <input type=\"checkbox\"\n               name=option\n               (change)=\"changeOption($event,option)\"\n                />\n                {{option.text}}\n            </div>   \n            <input type=\"text\" [(ngModel)]=\"newOption\" />\n         <button (click)=\"saveOptions()\">Save</button>\n        </div>\n        <div *ngIf=\"results\">\n            <div *ngFor=\"let option of survey.options\">\n            {{option.text}}: {{option.count}}\n            </div>\n        </div>\n    "
     }),
     __metadata("design:paramtypes", [survey_service_1.SurveyService])
 ], Survey);

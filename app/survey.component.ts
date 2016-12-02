@@ -5,7 +5,13 @@ import { SurveyService } from './services/survey.service';
     selector:'survey',
     providers:[SurveyService],
     template:`
-        <h3 (click)="toggleSurvey()">{{survey.title}}</h3>
+        <h3>{{survey.title}}</h3>
+        <button (click)="toggleSurvey()">
+        <span *ngIf="open">Close</span> <span *ngIf="!open">Open</span>
+        </button>
+        <button (click)="showResults()">
+        <span *ngIf="results">Hide Results</span><span *ngIf="!results">Show Results</span>
+        </button>
         <button *ngIf='mySurvey' (click)="deleteSurvey()">Delete</button>
         <div *ngIf="open">
 
@@ -15,8 +21,14 @@ import { SurveyService } from './services/survey.service';
                (change)="changeOption($event,option)"
                 />
                 {{option.text}}
-            </div>     
+            </div>   
+            <input type="text" [(ngModel)]="newOption" />
          <button (click)="saveOptions()">Save</button>
+        </div>
+        <div *ngIf="results">
+            <div *ngFor="let option of survey.options">
+            {{option.text}}: {{option.count}}
+            </div>
         </div>
     `
 })
@@ -25,9 +37,8 @@ export class Survey {
     @Input('survey') survey;
     @Input('user') user;
     @Input('token') token;
-    constructor(private surveyService:SurveyService){
-
-    }
+    newOption='';
+    constructor(private surveyService:SurveyService){}
     mySurvey=false;
     ngOnInit(){
         if(this.user){
@@ -38,6 +49,7 @@ export class Survey {
 
     }
     open:boolean = false;
+    results:boolean = false;
     options=[];
     toggleSurvey(){
         this.open = !this.open;
@@ -51,6 +63,12 @@ export class Survey {
         }
     }
     saveOptions(){
+        console.log(this.newOption)
+        if(this.newOption){
+            this.surveyService.addNewOption(this.survey._id,{'text':this.newOption, 'count':1}).subscribe(survey=>{
+                console.log('new option added')
+            })
+        }
         for(let i in this.options){
             this.surveyService.saveOption(this.survey._id,this.options[i]._id).subscribe(survey=>{
                 console.log('success?')
@@ -58,6 +76,9 @@ export class Survey {
                 console.log(error)
             })
         }
+
+        this.open = false;
+        this.results = true;
     }
     deleteSurvey(){
         this.surveyService.deleteSurvey(this.survey._id,this.token).subscribe(survey=>{
@@ -65,6 +86,9 @@ export class Survey {
         }, error=>{
             console.log(error)
         })
+    }
+    showResults(){
+        this.results=!this.results
     }
 
 }

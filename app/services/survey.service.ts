@@ -38,6 +38,14 @@ export class SurveyService{
             .map((res:Response)=>res.json())
             .catch((error:any)=>console.log(error || 'Server error'))
     }
+    
+    addNewOption(survey_id, body):Observable<Survey>{
+        let headers = new Headers({'Content-Type':'application/json'});
+        let options = new RequestOptions({headers: headers});
+        return this.http.post(apiUrl+'/surveys/'+survey_id+'/options', body, options)
+            .map((res:Response)=>res.json())
+            .catch((error:any)=>console.log(error || 'Server error'))
+    }
     /*
     createUser(newUser:User):Observable<User>{
         console.log('service trying to create user')

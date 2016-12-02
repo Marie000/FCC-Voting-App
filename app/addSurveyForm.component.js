@@ -40,6 +40,9 @@ var AddSurveyForm = (function () {
                 }, function (error) {
                     console.log(error);
                 });
+                this.submitted = false;
+                this.createSurveyForm.reset();
+                this.options = [];
             }
         }
     };
@@ -47,6 +50,7 @@ var AddSurveyForm = (function () {
         event.preventDefault();
         if (valid) {
             this.options.push({ text: value.newOption, count: 0 });
+            this.addOptionForm.reset();
         }
     };
     return AddSurveyForm;
