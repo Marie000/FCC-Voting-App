@@ -6,10 +6,11 @@ import { Dashboard } from './dashboard.component';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AddSurveyForm } from './addSurveyForm.component'
+import { Survey } from './survey.component';
 
 @NgModule({
     imports:      [ BrowserModule, FormsModule, ReactiveFormsModule, HttpModule  ],
-    declarations: [ AppComponent, Login, Dashboard, AddSurveyForm],
+    declarations: [ AppComponent, Login, Dashboard, AddSurveyForm, Survey],
     bootstrap:    [ AppComponent ]
 })
 export class AppModule { }

@@ -121,7 +121,7 @@ app.delete('/api/surveys/:id', authenticate, function(req,res){
 });
 
 // Submit answer - no body needed
-app.patch('/api/surveys/:survey_id/options/:option_id', function(req,res){
+app.put('/api/surveys/:survey_id/options/:option_id', function(req,res){
   var survey_id = req.params.survey_id;
   var option_id = req.params.option_id;
   Survey.findOne({_id:survey_id}).then(function(survey){

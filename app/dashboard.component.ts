@@ -12,9 +12,11 @@ import {SurveyService} from './services/survey.service';
          
          <!--View List of surveys-->
          <h2>List of surveys</h2>
-         <ul>
-         <li *ngFor="let survey of surveys">{{survey.title}}</li>
-         </ul>
+         
+         <div *ngFor="let survey of surveys">
+           <survey [survey]="survey"></survey>
+         </div>
+         
          <!--Create a survey-->
          <div *ngIf="private">
          <h2>Create a survey</h2>

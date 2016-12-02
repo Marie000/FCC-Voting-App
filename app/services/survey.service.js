@@ -30,6 +30,13 @@ var SurveyService = (function () {
             .map(function (res) { return res.json(); })
             .catch(function (error) { return console.log(error || 'Server error'); });
     };
+    SurveyService.prototype.saveOption = function (survey_id, option_id) {
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.put(apiUrl + '/surveys/' + survey_id + '/options/' + option_id, {}, options)
+            .map(function (res) { return res.json(); })
+            .catch(function (error) { return console.log(error || 'Server error'); });
+    };
     return SurveyService;
 }());
 SurveyService = __decorate([
