@@ -37,6 +37,13 @@ var SurveyService = (function () {
             .map(function (res) { return res.json(); })
             .catch(function (error) { return console.log(error || 'Server error'); });
     };
+    SurveyService.prototype.deleteSurvey = function (survey_id, token) {
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'x-auth': token });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.delete(apiUrl + '/surveys/' + survey_id, options)
+            .map(function (res) { return res.json(); })
+            .catch(function (error) { return console.log(error || 'Server error'); });
+    };
     return SurveyService;
 }());
 SurveyService = __decorate([

@@ -14,7 +14,7 @@ import {SurveyService} from './services/survey.service';
          <h2>List of surveys</h2>
          
          <div *ngFor="let survey of surveys">
-           <survey [survey]="survey"></survey>
+           <survey [survey]="survey" [user]="user" [token]="token"></survey>
          </div>
          
          <!--Create a survey-->
@@ -29,6 +29,7 @@ import {SurveyService} from './services/survey.service';
 export class Dashboard {
     @Input('private') private;
     @Input('token') token;
+    @Input('user') user;
     constructor(private surveyService:SurveyService){
         this.surveys=[];
     }

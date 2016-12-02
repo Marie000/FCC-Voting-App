@@ -31,6 +31,13 @@ export class SurveyService{
             .map((res:Response)=>res.json())
             .catch((error:any)=>console.log(error || 'Server error'))
     }
+    deleteSurvey(survey_id, token):Observable<Survey>{
+        let headers = new Headers({'Content-Type':'application/json', 'x-auth':token});
+        let options = new RequestOptions({headers: headers});
+        return this.http.delete(apiUrl+'/surveys/'+survey_id, options)
+            .map((res:Response)=>res.json())
+            .catch((error:any)=>console.log(error || 'Server error'))
+    }
     /*
     createUser(newUser:User):Observable<User>{
         console.log('service trying to create user')

@@ -48,7 +48,7 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
             <button (click)="openLogin()" class="logout-button btn btn-default">Return to Log in page</button>
             </div>
             
-            <dashboard [token]="token" [private]="loggedIn" ></dashboard>
+            <dashboard [user]='loggedInUser' [token]="token" [private]="loggedIn" ></dashboard>
         </div>
 `
 })
@@ -79,6 +79,7 @@ export class Login {
     submitted=false;
     loggedIn=false;
     token='';
+    loggedInUser='';
 
     onCreateUser(event,user,valid) {
         event.preventDefault();
@@ -119,7 +120,8 @@ export class Login {
                // this.getSurveys();
                 this.loggedIn=true;
                 this.dashboard=true;
-                this.token=user.tokens[0].token
+                this.token=user.tokens[0].token;
+                this.loggedInUser=user;
                 console.log(this.token)
             }, error=>{
                 console.log(error)
