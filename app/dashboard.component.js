@@ -44,7 +44,7 @@ Dashboard = __decorate([
     core_1.Component({
         selector: 'dashboard',
         providers: [survey_service_1.SurveyService],
-        template: "\n        <h1>This is the \n        <span *ngIf=\"!private\">Public</span>\n         <span *ngIf=\"private\">Private</span>\n         dashboard</h1>\n         \n         <!--View List of surveys-->\n         <h2>List of surveys</h2>\n         \n         <div *ngFor=\"let survey of surveys\">\n           <survey [survey]=\"survey\" [user]=\"user\" [token]=\"token\"></survey>\n         </div>\n         \n         <!--Create a survey-->\n         <div *ngIf=\"private\">\n         <h2>Create a survey</h2>\n         <add-survey-form [token]=\"token\"></add-survey-form>\n        </div>\n\n    "
+        template: "\n        <h1>This is the \n        <span *ngIf=\"!private\">Public</span>\n         <span *ngIf=\"private\">Private</span>\n         dashboard</h1>\n         \n         <!--View List of surveys-->\n         <h2>List of surveys</h2>\n         \n         <ul materialize=\"collapsible\" class=\"collapsible\" data-collapsible=\"accordion\" *ngFor=\"let survey of surveys\">\n           <li>\n           <div class=\"collapsible-header\">{{survey.title}}</div>\n           <div class=\"collapsible-body\">\n           <survey [survey]=\"survey\" [user]=\"user\" [token]=\"token\"></survey>\n</div>\n           </li>\n           \n         </ul>\n         \n         <!--Create a survey-->\n         <div *ngIf=\"private\">\n         <h2>Create a survey</h2>\n         <add-survey-form [token]=\"token\"></add-survey-form>\n        </div>\n\n    "
     }),
     __metadata("design:paramtypes", [survey_service_1.SurveyService])
 ], Dashboard);

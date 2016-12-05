@@ -13,9 +13,15 @@ import {SurveyService} from './services/survey.service';
          <!--View List of surveys-->
          <h2>List of surveys</h2>
          
-         <div *ngFor="let survey of surveys">
+         <ul materialize="collapsible" class="collapsible" data-collapsible="accordion" *ngFor="let survey of surveys">
+           <li>
+           <div class="collapsible-header">{{survey.title}}</div>
+           <div class="collapsible-body">
            <survey [survey]="survey" [user]="user" [token]="token"></survey>
-         </div>
+</div>
+           </li>
+           
+         </ul>
          
          <!--Create a survey-->
          <div *ngIf="private">

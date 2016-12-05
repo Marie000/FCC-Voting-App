@@ -7,10 +7,14 @@ import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AddSurveyForm } from './addSurveyForm.component'
 import { Survey } from './survey.component';
+import { MaterializeDirective } from "angular2-materialize";
+
+
 
 @NgModule({
     imports:      [ BrowserModule, FormsModule, ReactiveFormsModule, HttpModule  ],
-    declarations: [ AppComponent, Login, Dashboard, AddSurveyForm, Survey],
-    bootstrap:    [ AppComponent ]
+    declarations: [ AppComponent, Login, Dashboard, AddSurveyForm, Survey, MaterializeDirective],
+    bootstrap:    [ AppComponent ],
+    directives: [  ]
 })
 export class AppModule { }

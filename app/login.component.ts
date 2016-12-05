@@ -11,19 +11,31 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
     providers:[UserService, SurveyService],
     template: `
   <div *ngIf="!dashboard">
-  <h1>Login or sign up</h1>
+  <h1>Welcome my voting app!</h1>
+  <h2 *ngIf="signup">Sign up</h2>
+  <h2 *ngIf="!signup">Log in</h2>
     <div *ngIf="signup">   <button class="btn btn-default" (click)="toggleForms()">LogIn</button> </div>
     <div *ngIf="!signup">   <button class="btn btn-default" (click)="toggleForms()">Create a user</button> </div>
 
-    <div *ngIf="signup">
+    <div *ngIf="signup" class="signup-page">
         <h3>SignUp Page</h3>
         <form class="form-group" [formGroup]="createUserForm" (ngSubmit)="onCreateUser($event,createUserForm.value,createUserForm.valid)">
-            <input class="form-control" type="text" formControlName="email" placeholder="email" name="email"/>
+            <div class="input-field">
+            <label>email</label>
+            <input class="form-control" type="text" formControlName="email" name="email"/>
             <small *ngIf="!createUserForm.controls.email.valid && submitted">Valid email is mandatory</small>
-            <input class="form-control" type="password" formControlName="password" placeholder="password" name="password"/>
+            </div>
+            <div class="input-field">
+            <label>password</label>
+            <input class="form-control" type="password" formControlName="password" name="password"/>
             <small *ngIf="!createUserForm.controls.password.valid && submitted">Please enter a password - minimum 5 characters</small>
-            <input class="form-control" type="password" formControlName="password2" placeholder="retype password" name="password2"/>
+            </div>
+            
+            <div class="input-field">
+            <label>re-type password</label>
+            <input class="form-control" type="password" formControlName="password2" name="password2"/>
             <small *ngIf="!createUserForm.controls.password2.valid && submitted">Please re-enter your password</small>
+            </div>
             <input type="submit" class="form-control btn btn-default" value="Submit" />
         </form>
     </div>
@@ -37,7 +49,7 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
             <input type="submit" class="form-control btn btn-default" value="Submit"/>
         </form>
     </div>
-        <button (click)="accessPublicDashboard()">Enter as a guest</button>
+        <button (click)="accessPublicDashboard()" class="btn">Enter as a guest</button>
   </div>
         <div *ngIf="dashboard">
             <div *ngIf="loggedIn">

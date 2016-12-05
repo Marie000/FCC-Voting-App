@@ -12,3 +12,16 @@ h2, h3 {
 body {
     margin: 2em;
 }
+
+.signup-page {
+    margin: 80px;
+}
+
+body {
+    padding: 20px;
+    font-family: 'EB Garamond', serif;
+}
+
+h1, h2, h3 {
+    font-family: 'Dancing Script', sans-serif;
+}

@@ -33,9 +33,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get('/',function(req,res){
-  res.sendFile(path.join(__dirname+"/../index.html"));
-})
+
 
 // USERS
 

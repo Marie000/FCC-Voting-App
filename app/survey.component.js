@@ -28,6 +28,7 @@ var Survey = (function () {
     };
     Survey.prototype.toggleSurvey = function () {
         this.open = !this.open;
+        this.results = false;
     };
     Survey.prototype.changeOption = function (event, option) {
         if (event.target.checked) {
@@ -64,6 +65,7 @@ var Survey = (function () {
     };
     Survey.prototype.showResults = function () {
         this.results = !this.results;
+        this.open = false;
     };
     return Survey;
 }());
@@ -83,7 +85,7 @@ Survey = __decorate([
     core_1.Component({
         selector: 'survey',
         providers: [survey_service_1.SurveyService],
-        template: "\n        <h3>{{survey.title}}</h3>\n        <button (click)=\"toggleSurvey()\">\n        <span *ngIf=\"open\">Close</span> <span *ngIf=\"!open\">Open</span>\n        </button>\n        <button (click)=\"showResults()\">\n        <span *ngIf=\"results\">Hide Results</span><span *ngIf=\"!results\">Show Results</span>\n        </button>\n        <button *ngIf='mySurvey' (click)=\"deleteSurvey()\">Delete</button>\n        <div *ngIf=\"open\">\n\n            <div *ngFor=\"let option of survey.options\">\n                    <input type=\"checkbox\"\n               name=option\n               (change)=\"changeOption($event,option)\"\n                />\n                {{option.text}}\n            </div>   \n            <input type=\"text\" [(ngModel)]=\"newOption\" />\n         <button (click)=\"saveOptions()\">Save</button>\n        </div>\n        <div *ngIf=\"results\">\n            <div *ngFor=\"let option of survey.options\">\n            {{option.text}}: {{option.count}}\n            </div>\n        </div>\n    "
+        template: "\n        <li>\n        <div class=\"collapsible-header\">\n        <h3>{{survey.title}}</h3>\n        </div>\n        <div class=\"collapsible-body\">\n\n        <button (click)=\"showResults()\" class=\"btn\">\n        <span *ngIf=\"results\">Hide Results</span><span *ngIf=\"!results\">Show Results</span>\n        </button>\n        <button *ngIf='mySurvey' class=\"btn\" (click)=\"deleteSurvey()\">Delete</button>\n        <div >\n\n            <div *ngFor=\"let option of survey.options\">\n                    <input type=\"checkbox\"\n               name=option\n               (change)=\"changeOption($event,option)\"\n               id={{option._id}}\n                />\n                <label for={{option._id}}>{{option.text}}</label>\n            </div>   \n            <div class=\"input-field\">\n            <input type=\"text\" [(ngModel)]=\"newOption\" placeholder=\"enter another option here\" />\n            </div>\n         <button (click)=\"saveOptions()\" class=\"btn\">Save</button>\n        </div>\n        <div *ngIf=\"results\">\n            <div *ngFor=\"let option of survey.options\">\n            {{option.text}}: {{option.count}}\n            </div>\n        </div>\n        </div>\n        </li>\n\n    "
     }),
     __metadata("design:paramtypes", [survey_service_1.SurveyService])
 ], Survey);

@@ -4,6 +4,7 @@
  */
 (function (global) {
   System.config({
+    //defaultJSExtensions: true,
     paths: {
       // paths serve as alias
       'npm:': 'node_modules/'
@@ -24,6 +25,8 @@
       '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
       '@angular/upgrade': 'npm:@angular/upgrade/bundles/upgrade.umd.js',
       '@angular/upgrade/static': 'npm:@angular/upgrade/bundles/upgrade-static.umd.js',
+      "materialize-css": "node-modules/materialize-css",
+      "angular2-materialize": "node_modules/angular2-materialize",
       // other libraries
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js'
@@ -36,6 +39,10 @@
       },
       rxjs: {
         defaultExtension: 'js'
+      },
+      "angular2-materialize": {
+        "main": "dist/materialize-directive",
+        "defaultExtension": "js"
       }
     }
   });

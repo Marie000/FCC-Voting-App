@@ -5,31 +5,39 @@ import { SurveyService } from './services/survey.service';
     selector:'survey',
     providers:[SurveyService],
     template:`
+        <li>
+        <div class="collapsible-header">
         <h3>{{survey.title}}</h3>
-        <button (click)="toggleSurvey()">
-        <span *ngIf="open">Close</span> <span *ngIf="!open">Open</span>
-        </button>
-        <button (click)="showResults()">
+        </div>
+        <div class="collapsible-body">
+
+        <button (click)="showResults()" class="btn">
         <span *ngIf="results">Hide Results</span><span *ngIf="!results">Show Results</span>
         </button>
-        <button *ngIf='mySurvey' (click)="deleteSurvey()">Delete</button>
-        <div *ngIf="open">
+        <button *ngIf='mySurvey' class="btn" (click)="deleteSurvey()">Delete</button>
+        <div >
 
             <div *ngFor="let option of survey.options">
                     <input type="checkbox"
                name=option
                (change)="changeOption($event,option)"
+               id={{option._id}}
                 />
-                {{option.text}}
+                <label for={{option._id}}>{{option.text}}</label>
             </div>   
-            <input type="text" [(ngModel)]="newOption" />
-         <button (click)="saveOptions()">Save</button>
+            <div class="input-field">
+            <input type="text" [(ngModel)]="newOption" placeholder="enter another option here" />
+            </div>
+         <button (click)="saveOptions()" class="btn">Save</button>
         </div>
         <div *ngIf="results">
             <div *ngFor="let option of survey.options">
             {{option.text}}: {{option.count}}
             </div>
         </div>
+        </div>
+        </li>
+
     `
 })
 
@@ -46,13 +54,13 @@ export class Survey {
                 this.mySurvey=true;
             }
         }
-
     }
     open:boolean = false;
     results:boolean = false;
     options=[];
     toggleSurvey(){
         this.open = !this.open;
+        this.results = false;
     }
     changeOption(event,option){
         if(event.target.checked){
@@ -89,6 +97,7 @@ export class Survey {
     }
     showResults(){
         this.results=!this.results
+        this.open=false;
     }
 
 }
