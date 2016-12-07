@@ -10,6 +10,8 @@ var {User} = require ('./models/user');
 var {Survey} = require('./models/survey');
 var {authenticate} = require('./middleware/authenticate');
 
+var PORT = process.env.PORT || 9000;
+
 app.use(express.static(__dirname+"/../index.html"));
 
 app.use(bodyParser.json());
@@ -144,6 +146,6 @@ app.post('/api/surveys/:id/options', function(req,res){
 });
 
 
-app.listen(9000,function(){
-  console.log('server started on port 9000')
+app.listen(PORT,function(){
+  console.log('server started on port '+PORT)
 })

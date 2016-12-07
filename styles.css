@@ -16,8 +16,13 @@ h2, h3 {
     background-color: #ff5722;
 }
 
-.btn:hover, .bth:active {
+.btn:focus,.btn:active:focus,.btn.active:focus,
+.btn.focus,.btn:active.focus,.btn.active.focus, .btn:hover {
     background-color: #ff764d;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+    border-bottom: 2px solid #00bcd4 !important;
 }
 
 .signup-page, .login-page {
@@ -79,4 +84,9 @@ form {
 
 .collapsible {
     background-color: white;
+}
+
+#message {
+    font-weight: bold;
+    font-size: 18px;
 }
