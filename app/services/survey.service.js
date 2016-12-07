@@ -23,6 +23,11 @@ var SurveyService = (function () {
             .map(function (res) { return res.json(); })
             .catch(function (error) { return Rx_1.Observable.throw(error.error || 'Server error'); });
     };
+    SurveyService.prototype.getSurvey = function (id) {
+        return this.http.get(apiUrl + '/surveys/' + id)
+            .map(function (res) { return res.json(); })
+            .catch(function (error) { return Rx_1.Observable.throw(error || 'Server error'); });
+    };
     SurveyService.prototype.saveSurvey = function (newSurvey, token) {
         var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'x-auth': token });
         var options = new http_1.RequestOptions({ headers: headers });

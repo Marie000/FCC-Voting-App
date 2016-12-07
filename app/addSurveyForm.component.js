@@ -15,6 +15,7 @@ var AddSurveyForm = (function () {
     function AddSurveyForm(fb, surveyService) {
         this.fb = fb;
         this.surveyService = surveyService;
+        this.onNewSurvey = new core_1.EventEmitter();
         this.submitted = false;
         this.options = [];
     }
@@ -27,6 +28,7 @@ var AddSurveyForm = (function () {
         });
     };
     AddSurveyForm.prototype.onCreateSurvey = function (event, value, valid) {
+        var _this = this;
         event.preventDefault();
         if (event.defaultPrevented) {
             this.submitted = true;
@@ -39,6 +41,8 @@ var AddSurveyForm = (function () {
                     console.log('survey: ' + survey);
                 }, function (error) {
                     console.log(error);
+                }, function () {
+                    _this.onNewSurvey.emit();
                 });
                 this.submitted = false;
                 this.createSurveyForm.reset();
@@ -59,11 +63,15 @@ __decorate([
     core_1.Input('token'),
     __metadata("design:type", Object)
 ], AddSurveyForm.prototype, "token", void 0);
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", core_1.EventEmitter)
+], AddSurveyForm.prototype, "onNewSurvey", void 0);
 AddSurveyForm = __decorate([
     core_1.Component({
         selector: 'add-survey-form',
         providers: [survey_service_1.SurveyService],
-        template: "\n    <p>This is the add survey form</p>\n    <form class=\"form-control\" \n          [formGroup]=\"createSurveyForm\"\n          (ngSubmit)=\"onCreateSurvey($event,createSurveyForm.value, createSurveyForm.valid)\" >\n    \n          <input class=\"form-control\"\n                 type=\"text\"\n                 formControlName=\"title\"\n                 placeholder=\"survey title / question\"\n                 name=\"title\" />\n           <ul>      \n          <li *ngFor=\"let option of options\">\n                {{option.text}}\n          </li>\n          </ul>\n          \n          <form class=\"form-control\"\n                [formGroup]=\"addOptionForm\"\n                (ngSubmit)=\"onAddOption($event, addOptionForm.value, addOptionForm.valid)\">\n                \n             <input class=\"form-control\"\n                    type=\"text\"\n                    formControlName=\"newOption\"\n                    placeholder=\"option\"\n                    name=\"newOption\" />\n                    \n             <input type=\"submit\" value=\"submit option\" />\n          </form>\n          \n           \n          <input type=\"submit\"/>\n    </form>\n    \n    "
+        template: "\n    <form class=\"form-control\" \n          [formGroup]=\"createSurveyForm\"\n          (ngSubmit)=\"onCreateSurvey($event,createSurveyForm.value, createSurveyForm.valid)\" >\n    \n          <input class=\"form-control\"\n                 type=\"text\"\n                 formControlName=\"title\"\n                 placeholder=\"survey title / question\"\n                 name=\"title\" />\n           <ul>      \n          <li *ngFor=\"let option of options\">\n                {{option.text}}\n          </li>\n          </ul>\n          \n          <form class=\"form-control\"\n                [formGroup]=\"addOptionForm\"\n                (ngSubmit)=\"onAddOption($event, addOptionForm.value, addOptionForm.valid)\">\n                <div class=\"add-option-input\">\n             <input class=\"form-control\"\n                    type=\"text\"\n                    formControlName=\"newOption\"\n                    placeholder=\"option\"\n                    name=\"newOption\" />\n                    </div>\n             <input type=\"submit\" value=\"submit option\" class=\"btn add-option-button\"/>\n          </form>\n          <br>\n           \n          <input type=\"submit\" class=\"btn submit-button\"/>\n    </form>\n    \n    "
     }),
     __metadata("design:paramtypes", [forms_1.FormBuilder, survey_service_1.SurveyService])
 ], AddSurveyForm);

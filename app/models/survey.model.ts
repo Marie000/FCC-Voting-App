@@ -1,5 +1,5 @@
 export class Survey {
     title:string;
-    creator?:any;
+    _creator?:any;
     options:any[];
 }

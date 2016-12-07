@@ -19,12 +19,13 @@ var Login = (function () {
         this.userService = userService;
         this.surveyService = surveyService;
         this.signup = false;
-        this.dashboard = false;
+        this.dashboard = false; // should be false
         this.user = {};
         this.submitted = false;
         this.loggedIn = false;
         this.token = '';
         this.loggedInUser = '';
+        this.message = '';
     }
     Login.prototype.ngOnInit = function () {
         //signIn form controller
@@ -40,23 +41,26 @@ var Login = (function () {
         });
         // this.users = this.UserService.getData();
     };
-    Login.prototype.onCreateUser = function (event, user, valid) {
+    Login.prototype.onCreateUser = function (event, value, valid) {
         var _this = this;
         event.preventDefault();
         this.submitted = true;
         if (valid) {
-            if (user.password === user.password2) {
-                var newUser = { email: user.email, password: user.password };
+            console.log("valid");
+            if (value.password === value.password2) {
+                var newUser = { email: value.email, password: value.password };
+                console.log('newUser: ', newUser);
                 this.userService.createUser(newUser).subscribe(function (user) {
-                    _this.dashboard = true;
-                    _this.loggedIn = true;
+                    _this.signup = false;
+                    _this.submitted = false;
+                    _this.message = 'Successfully created an account for ' + user.email + '. Please re-enter your email and password to log in.';
                 }, function (error) {
                     console.log('there was an error: ');
                     console.log(error);
-                });
+                }, function () { _this.createUserForm.reset(); });
             }
             else {
-                console.log("passwords must match");
+                this.message = 'passwords must match';
             }
         }
     };
@@ -66,6 +70,10 @@ var Login = (function () {
     Login.prototype.logout = function () {
         this.dashboard = false;
         this.signup = false;
+        this.submitted = false;
+        this.token = '';
+        this.loggedInUser = '';
+        this.loggedIn = false;
     };
     Login.prototype.openLogin = function () {
         this.dashboard = false;
@@ -78,16 +86,14 @@ var Login = (function () {
         if (valid) {
             var body = { email: value.email, password: value.password };
             this.userService.login(body).subscribe(function (user) {
-                // this.getSurveys();
                 _this.loggedIn = true;
                 _this.dashboard = true;
                 _this.token = user.tokens[0].token;
                 _this.loggedInUser = user;
-                console.log(_this.token);
+                _this.message = '';
             }, function (error) {
-                console.log(error);
-            });
-            console.log('check for login');
+                _this.message = 'invalid email or password';
+            }, function () { _this.signInForm.reset(); });
         }
     };
     Login.prototype.accessPublicDashboard = function () {
@@ -99,7 +105,7 @@ Login = __decorate([
     core_1.Component({
         selector: 'login',
         providers: [user_service_1.UserService, survey_service_1.SurveyService],
-        template: "\n  <div *ngIf=\"!dashboard\">\n  <h1>Welcome my voting app!</h1>\n  <h2 *ngIf=\"signup\">Sign up</h2>\n  <h2 *ngIf=\"!signup\">Log in</h2>\n    <div *ngIf=\"signup\">   <button class=\"btn btn-default\" (click)=\"toggleForms()\">LogIn</button> </div>\n    <div *ngIf=\"!signup\">   <button class=\"btn btn-default\" (click)=\"toggleForms()\">Create a user</button> </div>\n\n    <div *ngIf=\"signup\" class=\"signup-page\">\n        <h3>SignUp Page</h3>\n        <form class=\"form-group\" [formGroup]=\"createUserForm\" (ngSubmit)=\"onCreateUser($event,createUserForm.value,createUserForm.valid)\">\n            <div class=\"input-field\">\n            <label>email</label>\n            <input class=\"form-control\" type=\"text\" formControlName=\"email\" name=\"email\"/>\n            <small *ngIf=\"!createUserForm.controls.email.valid && submitted\">Valid email is mandatory</small>\n            </div>\n            <div class=\"input-field\">\n            <label>password</label>\n            <input class=\"form-control\" type=\"password\" formControlName=\"password\" name=\"password\"/>\n            <small *ngIf=\"!createUserForm.controls.password.valid && submitted\">Please enter a password - minimum 5 characters</small>\n            </div>\n            \n            <div class=\"input-field\">\n            <label>re-type password</label>\n            <input class=\"form-control\" type=\"password\" formControlName=\"password2\" name=\"password2\"/>\n            <small *ngIf=\"!createUserForm.controls.password2.valid && submitted\">Please re-enter your password</small>\n            </div>\n            <input type=\"submit\" class=\"form-control btn btn-default\" value=\"Submit\" />\n        </form>\n    </div>\n        \n    <div *ngIf=\"!signup\">\n        <h3>LogIn</h3>\n        <form [formGroup]=\"signInForm\" (ngSubmit)=\"onLogin($event,signInForm.value,signInForm.valid)\" class=\"form-group\">\n            <input class=\"form-control\" type=\"text\" formControlName=\"email\" placeholder=\"email\" />\n            <small *ngIf=\"!signInForm.controls.email.valid && submitted\">Valid email is mandatory</small>\n            <input class=\"form-control\" type=\"password\" formControlName=\"password\" placeholder=\"password\" />\n            <input type=\"submit\" class=\"form-control btn btn-default\" value=\"Submit\"/>\n        </form>\n    </div>\n        <button (click)=\"accessPublicDashboard()\" class=\"btn\">Enter as a guest</button>\n  </div>\n        <div *ngIf=\"dashboard\">\n            <div *ngIf=\"loggedIn\">\n            <button (click)=\"logout()\" class=\"logout-button btn btn-default\">Log out</button>\n            </div>\n            \n            <div *ngIf=\"!loggedIn\">\n            <button (click)=\"openLogin()\" class=\"logout-button btn btn-default\">Return to Log in page</button>\n            </div>\n            \n            <dashboard [user]='loggedInUser' [token]=\"token\" [private]=\"loggedIn\" ></dashboard>\n        </div>\n"
+        template: "\n<!--LOGIN / SIGNUP PAGE-->\n  <div *ngIf=\"!dashboard\" class=\"login-page\">\n  <h1>Welcome my voting app!</h1>\n  <h2 *ngIf=\"signup\">Sign up</h2>\n  <h2 *ngIf=\"!signup\">Log in</h2>\n\n    <div id=\"message\">{{message}}</div>\n    <!--SIGNUP PAGE--->\n    <div *ngIf=\"signup\" >\n        <form class=\"form-group\" [formGroup]=\"createUserForm\" (ngSubmit)=\"onCreateUser($event,createUserForm.value,createUserForm.valid)\">\n            <div class=\"input-field\">\n            <label>email</label>\n            <input class=\"form-control\" type=\"text\" formControlName=\"email\" name=\"email\"/>\n            <small *ngIf=\"!createUserForm.controls.email.valid && submitted\">Valid email is mandatory</small>\n            </div>\n            <div class=\"input-field\">\n            <label>password</label>\n            <input class=\"form-control\" type=\"password\" formControlName=\"password\" name=\"password\"/>\n            <small *ngIf=\"!createUserForm.controls.password.valid && submitted\">Please enter a password - minimum 5 characters</small>\n            </div>\n            \n            <div class=\"input-field\">\n            <label>re-type password</label>\n            <input class=\"form-control\" type=\"password\" formControlName=\"password2\" name=\"password2\"/>\n            <small *ngIf=\"!createUserForm.controls.password2.valid && submitted\">Please re-enter your password</small>\n            </div>\n            <input type=\"submit\" class=\"form-control btn btn-default\" value=\"Submit\" />\n        </form>\n    </div>\n        \n    <!--LOGIN PAGE-->\n    <div *ngIf=\"!signup\">\n        <form [formGroup]=\"signInForm\" (ngSubmit)=\"onLogin($event,signInForm.value,signInForm.valid)\" class=\"form-group\">\n            <input class=\"form-control\" type=\"text\" formControlName=\"email\" placeholder=\"email\" />\n            <small *ngIf=\"!signInForm.controls.email.valid && submitted\">Valid email is mandatory</small>\n            <input class=\"form-control\" type=\"password\" formControlName=\"password\" placeholder=\"password\" />\n            <input type=\"submit\" class=\"form-control btn btn-default\" value=\"Submit\"/>\n        </form>\n    </div>\n    \n    <!--BUTTONS-->\n    <div *ngIf=\"signup\">   <button class=\"btn btn-default\" (click)=\"toggleForms()\">LogIn</button> </div>\n    <div *ngIf=\"!signup\">   <button class=\"btn btn-default\" (click)=\"toggleForms()\">Create a user</button> </div>  \n      <br>\n    <div><button (click)=\"accessPublicDashboard()\" class=\"btn\">Enter as a guest</button></div>\n    \n  </div><!-- END OF LOGIN / SIGNUP PAGE-->\n    \n  <!--DASHBOARD-->\n  <div *ngIf=\"dashboard\">\n     <div *ngIf=\"loggedIn\">\n       <button (click)=\"logout()\" class=\"logout-button btn btn-default\">Log out</button>\n     </div>\n            \n     <div *ngIf=\"!loggedIn\">\n       <button (click)=\"openLogin()\" class=\"logout-button btn btn-default\">Return to Log in page</button>\n     </div>\n            \n     <dashboard [user]='loggedInUser' [token]=\"token\" [private]=\"loggedIn\" ></dashboard>\n  </div>\n"
     }),
     __metadata("design:paramtypes", [forms_1.FormBuilder, user_service_1.UserService, survey_service_1.SurveyService])
 ], Login);

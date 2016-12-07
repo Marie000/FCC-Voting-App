@@ -10,15 +10,15 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
     selector: 'login',
     providers:[UserService, SurveyService],
     template: `
-  <div *ngIf="!dashboard">
+<!--LOGIN / SIGNUP PAGE-->
+  <div *ngIf="!dashboard" class="login-page">
   <h1>Welcome my voting app!</h1>
   <h2 *ngIf="signup">Sign up</h2>
   <h2 *ngIf="!signup">Log in</h2>
-    <div *ngIf="signup">   <button class="btn btn-default" (click)="toggleForms()">LogIn</button> </div>
-    <div *ngIf="!signup">   <button class="btn btn-default" (click)="toggleForms()">Create a user</button> </div>
 
-    <div *ngIf="signup" class="signup-page">
-        <h3>SignUp Page</h3>
+    <div id="message">{{message}}</div>
+    <!--SIGNUP PAGE--->
+    <div *ngIf="signup" >
         <form class="form-group" [formGroup]="createUserForm" (ngSubmit)="onCreateUser($event,createUserForm.value,createUserForm.valid)">
             <div class="input-field">
             <label>email</label>
@@ -40,8 +40,8 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
         </form>
     </div>
         
+    <!--LOGIN PAGE-->
     <div *ngIf="!signup">
-        <h3>LogIn</h3>
         <form [formGroup]="signInForm" (ngSubmit)="onLogin($event,signInForm.value,signInForm.valid)" class="form-group">
             <input class="form-control" type="text" formControlName="email" placeholder="email" />
             <small *ngIf="!signInForm.controls.email.valid && submitted">Valid email is mandatory</small>
@@ -49,19 +49,27 @@ const emailRegEx = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
             <input type="submit" class="form-control btn btn-default" value="Submit"/>
         </form>
     </div>
-        <button (click)="accessPublicDashboard()" class="btn">Enter as a guest</button>
+    
+    <!--BUTTONS-->
+    <div *ngIf="signup">   <button class="btn btn-default" (click)="toggleForms()">LogIn</button> </div>
+    <div *ngIf="!signup">   <button class="btn btn-default" (click)="toggleForms()">Create a user</button> </div>  
+      <br>
+    <div><button (click)="accessPublicDashboard()" class="btn">Enter as a guest</button></div>
+    
+  </div><!-- END OF LOGIN / SIGNUP PAGE-->
+    
+  <!--DASHBOARD-->
+  <div *ngIf="dashboard">
+     <div *ngIf="loggedIn">
+       <button (click)="logout()" class="logout-button btn btn-default">Log out</button>
+     </div>
+            
+     <div *ngIf="!loggedIn">
+       <button (click)="openLogin()" class="logout-button btn btn-default">Return to Log in page</button>
+     </div>
+            
+     <dashboard [user]='loggedInUser' [token]="token" [private]="loggedIn" ></dashboard>
   </div>
-        <div *ngIf="dashboard">
-            <div *ngIf="loggedIn">
-            <button (click)="logout()" class="logout-button btn btn-default">Log out</button>
-            </div>
-            
-            <div *ngIf="!loggedIn">
-            <button (click)="openLogin()" class="logout-button btn btn-default">Return to Log in page</button>
-            </div>
-            
-            <dashboard [user]='loggedInUser' [token]="token" [private]="loggedIn" ></dashboard>
-        </div>
 `
 })
 export class Login {
@@ -86,28 +94,34 @@ export class Login {
     }
 
     signup=false;
-    dashboard=false;
+    dashboard=false; // should be false
     user={};
     submitted=false;
     loggedIn=false;
     token='';
     loggedInUser='';
+    message='';
 
-    onCreateUser(event,user,valid) {
+    onCreateUser(event,value,valid) {
         event.preventDefault();
         this.submitted = true;
         if (valid) {
-            if (user.password === user.password2) {
-                let newUser = {email:user.email, password:user.password}
+            console.log("valid")
+            if (value.password === value.password2) {
+                let newUser = {email:value.email, password:value.password}
+                console.log('newUser: ',newUser)
                 this.userService.createUser(newUser).subscribe(user => {
-                    this.dashboard=true;
-                    this.loggedIn=true;
+                    this.signup=false;
+                    this.submitted=false;
+                    this.message='Successfully created an account for '+user.email+'. Please re-enter your email and password to log in.'
                 },error => {
                     console.log('there was an error: ')
                     console.log(error)
-                    })
+                    },
+                    ()=>{this.createUserForm.reset();}
+                )
                 } else {
-                   console.log("passwords must match")
+                   this.message='passwords must match';
                 }
         }
     }
@@ -117,6 +131,10 @@ export class Login {
     logout() {
         this.dashboard=false;
         this.signup=false;
+        this.submitted=false;
+        this.token='';
+        this.loggedInUser='';
+        this.loggedIn=false;
     }
     openLogin() {
         this.dashboard=false;
@@ -129,16 +147,14 @@ export class Login {
         if (valid) {
             let body = {email:value.email, password:value.password}
             this.userService.login(body).subscribe(user =>{
-               // this.getSurveys();
                 this.loggedIn=true;
                 this.dashboard=true;
                 this.token=user.tokens[0].token;
                 this.loggedInUser=user;
-                console.log(this.token)
+                this.message=''
             }, error=>{
-                console.log(error)
-            })
-            console.log('check for login')
+                this.message='invalid email or password'
+            },()=>{this.signInForm.reset()})
         }
     }
 

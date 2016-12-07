@@ -10,21 +10,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var survey_service_1 = require("./services/survey.service");
+var addSurveyForm_component_1 = require("./addSurveyForm.component");
 var Dashboard = (function () {
     function Dashboard(surveyService) {
+        var _this = this;
         this.surveyService = surveyService;
         this.surveys = [{ 'title': 'not loaded yet' }];
-        this.surveys = [];
+        this.surveyService.getSurveys().subscribe(function (surveys) { return _this.surveys = surveys; });
     }
-    Dashboard.prototype.ngOnInit = function () {
-        this.getSurveys();
-    };
-    Dashboard.prototype.getSurveys = function () {
+    Dashboard.prototype.refreshList = function () {
         var _this = this;
-        this.surveyService.getSurveys().subscribe(function (surveys) {
-            _this.surveys = surveys;
-            console.log(surveys);
-        });
+        this.surveyService.getSurveys().subscribe(function (surveys) { return _this.surveys = surveys; });
     };
     return Dashboard;
 }());
@@ -43,8 +39,9 @@ __decorate([
 Dashboard = __decorate([
     core_1.Component({
         selector: 'dashboard',
-        providers: [survey_service_1.SurveyService],
-        template: "\n        <h1>This is the \n        <span *ngIf=\"!private\">Public</span>\n         <span *ngIf=\"private\">Private</span>\n         dashboard</h1>\n         \n         <!--View List of surveys-->\n         <h2>List of surveys</h2>\n         \n         <ul materialize=\"collapsible\" class=\"collapsible\" data-collapsible=\"accordion\" *ngFor=\"let survey of surveys\">\n           <li>\n           <div class=\"collapsible-header\">{{survey.title}}</div>\n           <div class=\"collapsible-body\">\n           <survey [survey]=\"survey\" [user]=\"user\" [token]=\"token\"></survey>\n</div>\n           </li>\n           \n         </ul>\n         \n         <!--Create a survey-->\n         <div *ngIf=\"private\">\n         <h2>Create a survey</h2>\n         <add-survey-form [token]=\"token\"></add-survey-form>\n        </div>\n\n    "
+        viewBindings: [survey_service_1.SurveyService],
+        directives: [addSurveyForm_component_1.AddSurveyForm],
+        template: "\n        <h1>\n        <span *ngIf=\"!private\">Public</span>\n         <span *ngIf=\"private\">Private</span>\n         dashboard</h1>\n         \n         <!--View List of surveys-->\n         \n         <ul materialize=\"collapsible\" class=\"collapsible\" data-collapsible=\"accordion\" *ngFor=\"let survey of surveys\">\n           <li>\n           <div class=\"collapsible-header\"><h2>{{survey.title}}</h2></div>\n           <div class=\"collapsible-body\">\n           <survey [survey]=\"survey\" [user]=\"user\" [token]=\"token\" (onDelete)=\"refreshList()\"></survey>\n</div>\n           </li>\n           \n         </ul>\n         \n         <!--Create a survey-->\n         <div *ngIf=\"private\" class=\"add-survey-form\">\n         <h2>Create a survey</h2>\n         <add-survey-form [token]=\"token\" (onNewSurvey)=\"refreshList()\"></add-survey-form>\n        </div>\n\n    "
     }),
     __metadata("design:paramtypes", [survey_service_1.SurveyService])
 ], Dashboard);

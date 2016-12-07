@@ -16,19 +16,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(function (req, res, next) {
-  console.log('middleware working')
   // Website you wish to allow to connect
   res.setHeader('Access-Control-Allow-Origin', '*');
-
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
   // Request headers you wish to allow
   res.setHeader('Access-Control-Allow-Headers', 'x-auth, Content-Type');
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
   //res.setHeader('Access-Control-Allow-Credentials', true);
-
   // Pass to next layer of middleware
   next();
 });
@@ -39,15 +35,10 @@ app.use(function (req, res, next) {
 
 // Create a user
 app.post('/api/users', function(req,res){
-  console.log('server trying to create a user')
-  console.log(req.body)
   var body = _.pick(req.body,['email','password']);
   var newUser = new User(body);
   newUser.save().then(function(user){
-    return user.generateAuthToken()
-  }).then(function(token){
-    console.log('token: '+token);
-    res.header('x-auth',token).json(newUser.email)
+    res.send(user);
   }).catch(function(e){
     res.status(400).send(e)
   })

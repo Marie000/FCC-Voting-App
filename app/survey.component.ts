@@ -1,22 +1,17 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SurveyService } from './services/survey.service';
 
 @Component({
     selector:'survey',
     providers:[SurveyService],
     template:`
-        <li>
-        <div class="collapsible-header">
-        <h3>{{survey.title}}</h3>
-        </div>
-        <div class="collapsible-body">
-
-        <button (click)="showResults()" class="btn">
+        
+        <button (click)="showResults()" class="btn small-button">
         <span *ngIf="results">Hide Results</span><span *ngIf="!results">Show Results</span>
         </button>
-        <button *ngIf='mySurvey' class="btn" (click)="deleteSurvey()">Delete</button>
-        <div >
-
+        <button *ngIf='mySurvey' class="btn" (click)="deleteSurvey()">Delete survey</button>
+        
+        <div *ngIf="!results" class="survey-options">
             <div *ngFor="let option of survey.options">
                     <input type="checkbox"
                name=option
@@ -30,13 +25,13 @@ import { SurveyService } from './services/survey.service';
             </div>
          <button (click)="saveOptions()" class="btn">Save</button>
         </div>
-        <div *ngIf="results">
+        
+        <div *ngIf="results" class="survey-results">
             <div *ngFor="let option of survey.options">
             {{option.text}}: {{option.count}}
             </div>
         </div>
-        </div>
-        </li>
+
 
     `
 })
@@ -45,14 +40,20 @@ export class Survey {
     @Input('survey') survey;
     @Input('user') user;
     @Input('token') token;
+    @Output() onDelete:EventEmitter = new EventEmitter();
     newOption='';
     constructor(private surveyService:SurveyService){}
     mySurvey=false;
     ngOnInit(){
+        console.log(this.user);
+        console.log(this.user._id);
         if(this.user){
-            if(this.user._id.toString()===this.survey._creator.toString()){
+            console.log(this.user._id)
+            console.log(this.survey)
+            console.log(this.survey._creator);
+           if(this.user._id===this.survey._creator){
                 this.mySurvey=true;
-            }
+           }
         }
     }
     open:boolean = false;
@@ -71,7 +72,6 @@ export class Survey {
         }
     }
     saveOptions(){
-        console.log(this.newOption)
         if(this.newOption){
             this.surveyService.addNewOption(this.survey._id,{'text':this.newOption, 'count':1}).subscribe(survey=>{
                 console.log('new option added')
@@ -82,15 +82,23 @@ export class Survey {
                 console.log('success?')
             }, error =>{
                 console.log(error)
-            })
+            },
+                ()=>{
+                    this.surveyService.getSurvey(this.survey._id).subscribe(survey=>{
+                        this.survey = survey;
+                    });
+                    this.options=[]
+            }
+            )
         }
+
 
         this.open = false;
         this.results = true;
     }
     deleteSurvey(){
         this.surveyService.deleteSurvey(this.survey._id,this.token).subscribe(survey=>{
-            console.log('deleted')
+            this.onDelete.emit();
         }, error=>{
             console.log(error)
         })

@@ -15,6 +15,6 @@ import { MaterializeDirective } from "angular2-materialize";
     imports:      [ BrowserModule, FormsModule, ReactiveFormsModule, HttpModule  ],
     declarations: [ AppComponent, Login, Dashboard, AddSurveyForm, Survey, MaterializeDirective],
     bootstrap:    [ AppComponent ],
-    directives: [  ]
+    directives: [ AddSurveyForm ]
 })
 export class AppModule { }

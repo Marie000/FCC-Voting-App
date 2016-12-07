@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var validator = require('validator');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
+var _ = require('lodash');
 
 var UserSchema = mongoose.Schema({
   email: {
@@ -35,6 +36,8 @@ UserSchema.methods.generateAuthToken = function(){
   var user = this;
   var access = 'auth';
   var token = jwt.sign({_id:user._id.toHexString(), access:access},"secret123").toString();
+  // remove any 'auth' token before pushing the new one
+  _.pullAllBy(user.tokens,[{'access':'auth'}],'auth');
   user.tokens.push({access:access, token:token});
   return user.save().then(function(){
     return token

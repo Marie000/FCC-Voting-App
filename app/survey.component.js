@@ -13,6 +13,7 @@ var survey_service_1 = require("./services/survey.service");
 var Survey = (function () {
     function Survey(surveyService) {
         this.surveyService = surveyService;
+        this.onDelete = new core_1.EventEmitter();
         this.newOption = '';
         this.mySurvey = false;
         this.open = false;
@@ -20,8 +21,13 @@ var Survey = (function () {
         this.options = [];
     }
     Survey.prototype.ngOnInit = function () {
+        console.log(this.user);
+        console.log(this.user._id);
         if (this.user) {
-            if (this.user._id.toString() === this.survey._creator.toString()) {
+            console.log(this.user._id);
+            console.log(this.survey);
+            console.log(this.survey._creator);
+            if (this.user._id === this.survey._creator) {
                 this.mySurvey = true;
             }
         }
@@ -40,7 +46,7 @@ var Survey = (function () {
         }
     };
     Survey.prototype.saveOptions = function () {
-        console.log(this.newOption);
+        var _this = this;
         if (this.newOption) {
             this.surveyService.addNewOption(this.survey._id, { 'text': this.newOption, 'count': 1 }).subscribe(function (survey) {
                 console.log('new option added');
@@ -51,14 +57,20 @@ var Survey = (function () {
                 console.log('success?');
             }, function (error) {
                 console.log(error);
+            }, function () {
+                _this.surveyService.getSurvey(_this.survey._id).subscribe(function (survey) {
+                    _this.survey = survey;
+                });
+                _this.options = [];
             });
         }
         this.open = false;
         this.results = true;
     };
     Survey.prototype.deleteSurvey = function () {
+        var _this = this;
         this.surveyService.deleteSurvey(this.survey._id, this.token).subscribe(function (survey) {
-            console.log('deleted');
+            _this.onDelete.emit();
         }, function (error) {
             console.log(error);
         });
@@ -81,11 +93,15 @@ __decorate([
     core_1.Input('token'),
     __metadata("design:type", Object)
 ], Survey.prototype, "token", void 0);
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", core_1.EventEmitter)
+], Survey.prototype, "onDelete", void 0);
 Survey = __decorate([
     core_1.Component({
         selector: 'survey',
         providers: [survey_service_1.SurveyService],
-        template: "\n        <li>\n        <div class=\"collapsible-header\">\n        <h3>{{survey.title}}</h3>\n        </div>\n        <div class=\"collapsible-body\">\n\n        <button (click)=\"showResults()\" class=\"btn\">\n        <span *ngIf=\"results\">Hide Results</span><span *ngIf=\"!results\">Show Results</span>\n        </button>\n        <button *ngIf='mySurvey' class=\"btn\" (click)=\"deleteSurvey()\">Delete</button>\n        <div >\n\n            <div *ngFor=\"let option of survey.options\">\n                    <input type=\"checkbox\"\n               name=option\n               (change)=\"changeOption($event,option)\"\n               id={{option._id}}\n                />\n                <label for={{option._id}}>{{option.text}}</label>\n            </div>   \n            <div class=\"input-field\">\n            <input type=\"text\" [(ngModel)]=\"newOption\" placeholder=\"enter another option here\" />\n            </div>\n         <button (click)=\"saveOptions()\" class=\"btn\">Save</button>\n        </div>\n        <div *ngIf=\"results\">\n            <div *ngFor=\"let option of survey.options\">\n            {{option.text}}: {{option.count}}\n            </div>\n        </div>\n        </div>\n        </li>\n\n    "
+        template: "\n        \n        <button (click)=\"showResults()\" class=\"btn small-button\">\n        <span *ngIf=\"results\">Hide Results</span><span *ngIf=\"!results\">Show Results</span>\n        </button>\n        <button *ngIf='mySurvey' class=\"btn\" (click)=\"deleteSurvey()\">Delete survey</button>\n        \n        <div *ngIf=\"!results\" class=\"survey-options\">\n            <div *ngFor=\"let option of survey.options\">\n                    <input type=\"checkbox\"\n               name=option\n               (change)=\"changeOption($event,option)\"\n               id={{option._id}}\n                />\n                <label for={{option._id}}>{{option.text}}</label>\n            </div>   \n            <div class=\"input-field\">\n            <input type=\"text\" [(ngModel)]=\"newOption\" placeholder=\"enter another option here\" />\n            </div>\n         <button (click)=\"saveOptions()\" class=\"btn\">Save</button>\n        </div>\n        \n        <div *ngIf=\"results\" class=\"survey-results\">\n            <div *ngFor=\"let option of survey.options\">\n            {{option.text}}: {{option.count}}\n            </div>\n        </div>\n\n\n    "
     }),
     __metadata("design:paramtypes", [survey_service_1.SurveyService])
 ], Survey);

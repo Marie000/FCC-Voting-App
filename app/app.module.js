@@ -28,7 +28,7 @@ AppModule = __decorate([
         imports: [platform_browser_1.BrowserModule, forms_1.FormsModule, forms_1.ReactiveFormsModule, http_1.HttpModule],
         declarations: [app_component_1.AppComponent, login_component_1.Login, dashboard_component_1.Dashboard, addSurveyForm_component_1.AddSurveyForm, survey_component_1.Survey, angular2_materialize_1.MaterializeDirective],
         bootstrap: [app_component_1.AppComponent],
-        directives: []
+        directives: [addSurveyForm_component_1.AddSurveyForm]
     }),
     __metadata("design:paramtypes", [])
 ], AppModule);
