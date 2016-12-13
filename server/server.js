@@ -12,7 +12,7 @@ var {authenticate} = require('./middleware/authenticate');
 
 var PORT = process.env.PORT || 9000;
 
-app.use(express.static(__dirname+"/../index.html"));
+app.use(express.static(__dirname+"/../"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));

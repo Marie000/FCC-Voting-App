@@ -2,7 +2,8 @@
   "name": "FCC-voting-app",
   "version": "1.0.0",
   "scripts": {
-    "start": "concurrently \"npm run tsc:w\" \"npm run lite\" ",
+    "start":"node server/server.js",
+    "start2": "concurrently \"npm run tsc:w\" \"npm run lite\" ",
     "lite": "lite-server",
     "tsc": "tsc",
     "tsc:w": "tsc -w"
@@ -49,5 +50,8 @@
     "concurrently": "^3.0.0",
     "lite-server": "^2.2.2",
     "typescript": "^2.0.3"
+  },
+  "engines":{
+    "node":"7.0.0"
   }
 }
